@@ -5,7 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "day01": "npm run build && node day01/index.js"
   },
   "repository": {
     "type": "git",
