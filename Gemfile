@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 gem 'rubocop', require: false
-gem 'reek', require: false
+gem 'solargraph', require: false

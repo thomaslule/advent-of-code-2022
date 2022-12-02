@@ -1,2 +1,9 @@
-Style/EndOfLine:
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.1
+
+Layout/EndOfLine:
   EnforcedStyle: lf
+
+Naming/MethodParameterName:
+  Enabled: false
