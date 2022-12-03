@@ -1,49 +1,100 @@
 # frozen_string_literal: true
 
-$is_defeated_by = { '🪨': '✂️', '🗒️': '🪨', '✂️': '🗒️' }
+class Rock
+  def self.value
+    1
+  end
 
-def calculate_score(them, me)
-  base_score_values = { '🪨': 1, '🗒️': 2, '✂️': 3 }
-  base_score = base_score_values[me.to_sym]
+  def self.beats
+    Scissors
+  end
 
-  return base_score + 6 if them == $is_defeated_by[me.to_sym]
-
-  return base_score if me == $is_defeated_by[them.to_sym]
-
-  base_score + 3
+  def self.beaten_by
+    Paper
+  end
 end
 
-firt_column_key = { A: '🪨', B: '🗒️', C: '✂️' }
-second_column_key = { X: '🪨', Y: '🗒️', Z: '✂️' }
+class Paper
+  def self.value
+    2
+  end
+
+  def self.beats
+    Rock
+  end
+
+  def self.beaten_by
+    Scissors
+  end
+end
+
+class Scissors
+  def self.value
+    3
+  end
+
+  def self.beats
+    Paper
+  end
+
+  def self.beaten_by
+    Rock
+  end
+end
+
+def calculate_score(them, me)
+  return me.value + 6 if me.beats == them
+
+  return me.value if me.beaten_by == them
+
+  me.value + 3
+end
+
 score = 0
 
 File.readlines('input.txt', chomp: true).each do |line|
   round_array = line.split
-  them = firt_column_key[round_array[0].to_sym]
-  me = second_column_key[round_array[1].to_sym]
+  them = case round_array[0]
+         when 'A'
+           Rock
+         when 'B'
+           Paper
+         else
+           Scissors
+         end
+  me = case round_array[1]
+       when 'X'
+         Rock
+       when 'Y'
+         Paper
+       else
+         Scissors
+       end
   score += calculate_score(them, me)
 end
 
 puts("part 1 #{score}")
 
-def get_my_move(them, expected_result)
-  defeats = { '🪨': '🗒️', '🗒️': '✂️', '✂️': '🪨' }
-
-  return $is_defeated_by[them.to_sym] if expected_result == 'lose'
-
-  return defeats[them.to_sym] if expected_result == 'win'
-
-  them
-end
-
-second_column_key_fixed = { X: 'lose', Y: 'draw', Z: 'win' }
 score2 = 0
 
 File.readlines('input.txt', chomp: true).each do |line|
   round_array = line.split
-  them = firt_column_key[round_array[0].to_sym]
-  expected_result = second_column_key_fixed[round_array[1].to_sym]
-  me = get_my_move(them, expected_result)
+  them = case round_array[0]
+         when 'A'
+           Rock
+         when 'B'
+           Paper
+         else
+           Scissors
+         end
+  me = case round_array[1]
+       when 'X' # lose
+         them.beats
+       when 'Y' # draw
+         them
+       else # win
+         them.beaten_by
+       end
   score2 += calculate_score(them, me)
 end
 
