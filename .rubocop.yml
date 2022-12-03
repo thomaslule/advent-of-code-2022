@@ -7,3 +7,6 @@ Layout/EndOfLine:
 
 Naming/MethodParameterName:
   Enabled: false
+
+Style/Documentation:
+  Enabled: false
