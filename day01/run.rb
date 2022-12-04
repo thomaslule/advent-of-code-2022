@@ -3,8 +3,8 @@
 by_elf = []
 current_elf = []
 
-File.readlines('input.txt', chomp: true).each do |line|
-  if line == ''
+File.readlines("input.txt", chomp: true).each do |line|
+  if line == ""
     by_elf.push(current_elf)
     current_elf = []
   else

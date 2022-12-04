@@ -52,20 +52,20 @@ end
 
 score = 0
 
-File.readlines('input.txt', chomp: true).each do |line|
+File.readlines("input.txt", chomp: true).each do |line|
   round_array = line.split
   them = case round_array[0]
-         when 'A'
+         when "A"
            Rock
-         when 'B'
+         when "B"
            Paper
          else
            Scissors
          end
   me = case round_array[1]
-       when 'X'
+       when "X"
          Rock
-       when 'Y'
+       when "Y"
          Paper
        else
          Scissors
@@ -77,20 +77,20 @@ puts("part 1 #{score}")
 
 score2 = 0
 
-File.readlines('input.txt', chomp: true).each do |line|
+File.readlines("input.txt", chomp: true).each do |line|
   round_array = line.split
   them = case round_array[0]
-         when 'A'
+         when "A"
            Rock
-         when 'B'
+         when "B"
            Paper
          else
            Scissors
          end
   me = case round_array[1]
-       when 'X' # lose
+       when "X" # lose
          them.beats
-       when 'Y' # draw
+       when "Y" # draw
          them
        else # win
          them.beaten_by
