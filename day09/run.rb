@@ -39,36 +39,32 @@ class Coord
   end
 end
 
-class Head
+class Knot
   attr_accessor :coord
 
   def initialize(coord)
     @coord = coord
   end
+end
 
+class Head < Knot
   def move(movement)
     @coord = @coord.move(movement)
   end
 end
 
-class Tail
-  def initialize(coord, head)
-    @coord = coord
-    @head = head
-    @visited = Set[@coord]
+class AttachedKnot < Knot
+  def initialize(coord, previous)
+    super(coord)
+    @previous = previous
   end
 
   def move
-    distance = @coord.distance(@head.coord)
+    distance = @coord.distance(@previous.coord)
     return if distance.x.abs <= 1 && distance.y.abs <= 1
 
     movement = Coord.new(reduce_to_one(distance.x), reduce_to_one(distance.y))
     @coord = @coord.move(movement)
-    @visited.add(@coord)
-  end
-
-  def number_visited
-    @visited.size
   end
 
   def reduce_to_one(n)
@@ -80,19 +76,61 @@ class Tail
   end
 end
 
+class Tail < AttachedKnot
+  def initialize(coord, previous)
+    super(coord, previous)
+    @visited = Set[@coord]
+  end
+
+  def move
+    super
+    @visited.add(@coord)
+  end
+
+  def number_visited
+    @visited.size
+  end
+end
+
+class Rope
+  def initialize(coord, size)
+    @knots = []
+    size.times do |i|
+      case i
+      when 0
+        @knots.push(Head.new(coord))
+      when size - 1
+        @knots.push(Tail.new(coord, @knots.last))
+      else
+        @knots.push(AttachedKnot.new(coord, @knots.last))
+      end
+    end
+  end
+
+  def move_head(movement)
+    @knots[0].move(movement)
+    @knots[1..].each(&:move)
+  end
+
+  def tail_visited
+    @knots.last.number_visited
+  end
+end
+
 if __FILE__ == $PROGRAM_NAME
   origin = Coord.new(0, 0)
-  head = Head.new(origin)
-  tail = Tail.new(origin, head)
+  rope1 = Rope.new(origin, 2)
+  rope2 = Rope.new(origin, 10)
 
   File.readlines("input.txt", chomp: true).each do |line|
     direction, repeat = line.split
     movement = Coord.from_direction(direction)
     repeat.to_i.times do
-      head.move(movement)
-      tail.move
+      rope1.move_head(movement)
+      rope2.move_head(movement)
     end
   end
 
-  puts tail.number_visited
+  puts "part 1 #{rope1.tail_visited}"
+  puts "part 2 #{rope2.tail_visited}"
 end
