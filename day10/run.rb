@@ -51,12 +51,33 @@ class SignalCalculator
   end
 end
 
+class CRT
+  def initialize(cpu)
+    @rows = []
+    cpu.add_observer(self)
+  end
+
+  def update(cycle, register)
+    sprite = [register, register + 1, register + 2]
+    column = cycle % 40
+    @rows.push([]) if column == 1
+    pixel = sprite.include?(column) ? "#" : " "
+    @rows.last.push(pixel)
+  end
+
+  def draw
+    @rows.each { |row| puts row.join }
+  end
+end
+
 if __FILE__ == $PROGRAM_NAME
   cpu = CPU.new
   calculator = SignalCalculator.new(cpu)
+  crt = CRT.new(cpu)
   File.readlines("input.txt", chomp: true).each do |line|
     cpu.interpret_str(line)
   end
 
   puts "part 1 #{calculator.sum}"
+  crt.draw
 end
